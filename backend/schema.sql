@@ -39,8 +39,16 @@ CREATE TABLE IF NOT EXISTS videos (
 
 -- points table
 CREATE TABLE IF NOT EXISTS points (
-  id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,  
   user_id INTEGER REFERENCES users(id),
   points INTEGER DEFAULT 0,
   reason TEXT
+);
+
+CREATE TABLE IF NOT EXISTS user_skills_detail (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  skill_name VARCHAR(100) NOT NULL,
+  type VARCHAR(10) CHECK (type IN ('have', 'want')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
