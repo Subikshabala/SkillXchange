@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 
 // Register Controller
 exports.registerUser = async (req, res) => {
+  console.log("💡 Received from frontend:", req.body); 
+
   const { username, email, password } = req.body;
 
   try {
@@ -26,6 +28,7 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Login Controller
 exports.loginUser = async (req, res) => {

@@ -1,7 +1,46 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function LoginForm() {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!isLoginMode) {
+    // Signup
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/signup", {
+        username,
+        email,
+        password,
+      });
+      alert("Signup successful!");
+      console.log(res.data);
+    } catch (err) {
+      alert("Signup failed!");
+      console.error(err.response?.data || err.message);
+    }
+  } else {
+    // Login
+    try {
+      const res = await axios.post("http://localhost:5000/api/users/login", {
+        email,
+        password,
+      });
+      alert("Login successful!");
+      localStorage.setItem("token", res.data.token);
+
+      console.log(res.data);
+    } catch (err) {
+      alert("Login failed!");
+      console.error(err.response?.data || err.message);
+    }
+  }
+};
 
   return (
     
@@ -40,15 +79,18 @@ function LoginForm() {
       </div>
 
       {/* Form Section */}
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Signup-only Field */}
         {!isLoginMode && (
           <input
             type="text"
             placeholder="Name"
             required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full p-3 border-b-2 border-gray-300 outline-none focus:border-blue-500 placeholder-gray-400"
           />
+
         )}
 
         {/* Shared Fields */}
@@ -56,14 +98,19 @@ function LoginForm() {
           type="email"
           placeholder="Email Address"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-3 border-b-2 border-gray-300 outline-none focus:border-blue-500 placeholder-gray-400"
         />
         <input
           type="password"
           placeholder="Password"
           required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full p-3 border-b-2 border-gray-300 outline-none focus:border-blue-500 placeholder-gray-400"
         />
+
 
         {/* Signup-only Field */}
         {!isLoginMode && (
