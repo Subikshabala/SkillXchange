@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import login from '../Assets/Login.png';
+import login from '../Asstes/login.png';
 import Avatar from '@mui/material/Avatar';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Box, Card, Container, TextField, Typography, Grid, Button } from '@mui/material';
