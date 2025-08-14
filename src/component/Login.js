@@ -3,9 +3,58 @@ import login from '../Asstes/login.png';
 import { Link } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import ButtonBase from '@mui/material/ButtonBase';
+
+import { useState } from 'react';
+
+import Modal from 'react-bootstrap/Modal';
 import { Box, Card, Container, TextField, Typography, Button } from '@mui/material';
 
+
+
+
+
 function Login() {
+
+ const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const handleSignup = () => {
+    if (!username || !email || !password) {
+      alert("Please fill in all the fields before signing up.");
+      return;
+    }
+    // ✅ Proceed with signup logic here
+    console.log("Signup successful");
+  
+
+   
+
+
+
+
+    
+    if (password !== confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      return;
+    }
+    // ✅ Proceed with signup logic
+    console.log("Signup successful");}
+  ;
+
+
+const [showFirst, setShowFirst] = useState(false);
+  const [showSecond, setShowSecond] = useState(false);
+
+  // Function to open second modal and close first modal
+  const handleOpenSecond = () => {
+    setShowFirst(false); // Close first modal
+    setTimeout(() => setShowSecond(true), 300);
+  };
+  
+
+
   const [avatarSrc, setAvatarSrc] = React.useState(undefined);
 
   const handleAvatarChange = (event) => {
@@ -55,6 +104,159 @@ function Login() {
                 <Link className="nav-link" to="/contact">Contact Us</Link>
               </li>
             </ul>
+          <Button
+  variant="primary"
+  onClick={() => setShowFirst(true)}
+  style={{
+    border: "2px solid white", // white border
+    color: "white",            // text color white
+    backgroundColor: "#0d6efd", // primary blue
+    marginRight: "20px"
+  }}
+>
+  Login
+</Button>
+
+      {/* First Modal- */}
+   <Modal show={showFirst} onHide={() => setShowFirst(false)}>
+      <Modal.Body>
+        <Box sx={{ flex: 1, maxWidth: 550, maxHeight: 540, width: "100%" }}>
+          <Card variant="outlined" sx={{ borderRadius: "10px", p: 3 }}>
+            <Typography variant="h5" color="primary" align="center" gutterBottom>
+              <b>SkillXchange</b>
+            </Typography>
+            <Typography variant="h6" align="center" gutterBottom>
+              LOGIN
+            </Typography>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body2" fontWeight="bold" >UserName</Typography>
+              <TextField 
+                label="UserName/E-mail" 
+                variant="outlined" 
+                size="small" 
+                required 
+                value={username} 
+                placeholder="Enter Your Name or E-mail"
+                onChange={(e) => setUsername(e.target.value)} 
+              />
+
+            
+
+              <Typography variant="body2" fontWeight="bold">Password</Typography>
+              <TextField 
+                label="Password" 
+                type="password" 
+                variant="outlined" 
+                size="small" 
+                required 
+                placeholder="Enter Password"
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+              />
+
+              <Button 
+                variant="contained" 
+                text-color="primary" 
+                className="Submit" 
+                fullWidth 
+                onClick={handleSignup}
+              >
+                Signup
+              </Button>
+
+              <hr />
+
+              <Button 
+                variant="secondary" 
+                className="mt-1" 
+                onClick={handleOpenSecond} 
+                style={{ textTransform: "none" }} 
+                disableRipple
+              > 
+                <Typography variant="body2" align="center" color="text.secondary">
+                  Don't have an account? <Link to="/">Signup</Link>
+                </Typography>
+              </Button>
+            </Box>
+          </Card>
+        </Box>
+      </Modal.Body>
+    </Modal>
+
+      {/* Second Modal */}
+      <Modal show={showSecond} onHide={() => setShowSecond(false)}>
+      <Modal.Body>
+        <Box sx={{ flex: 1, maxWidth: 550, width: "100%" }}>
+          <Card variant="outlined" sx={{ borderRadius: "10px", p: 3 }}>
+            <Typography variant="h5" color="primary" align="center" gutterBottom>
+              <b>SkillXchange</b>
+            </Typography>
+            <Typography variant="h6" align="center" gutterBottom>
+              SIGN UP
+            </Typography>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body2" fontWeight="bold">UserName</Typography>
+              <TextField 
+                label="UserName" 
+                variant="outlined" 
+                size="small" 
+                required 
+                value={username}
+                placeholder="Enter your Name"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+
+              <Typography variant="body2" fontWeight="bold">Email</Typography>
+              <TextField 
+                label="Email" 
+                variant="outlined" 
+                size="small" 
+                required 
+                value={email}
+                placeholder="Enter Your E-mail"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+
+              <Typography variant="body2" fontWeight="bold">Password</Typography>
+              <TextField 
+                label="Password" 
+                type="password" 
+                variant="outlined" 
+                size="small" 
+                required
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <Typography variant="body2" fontWeight="bold">Confirm Password</Typography>
+              <TextField
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                size="small"
+                required
+                placeholder="Enter Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+
+              <Button 
+                variant="contained" 
+                color="primary" 
+                fullWidth
+                onClick={handleSignup}
+              >
+                Sign Up
+              </Button>
+            </Box>
+          </Card>
+        </Box>
+      </Modal.Body>
+    </Modal>
+
 
             <div className="d-flex align-items-center">
               <ButtonBase
@@ -88,6 +290,7 @@ function Login() {
                 />
               </ButtonBase>
             </div>
+            
           </div>
         </div>
       </nav>
@@ -124,30 +327,11 @@ function Login() {
         </Box>
 
         {/* Right: Form */}
-        <Box sx={{ flex: 1, maxWidth: 450, width: '100%' }}>
-          <Card variant="outlined" sx={{ borderRadius: '10px', p: 3 }}>
-            <Typography variant="h5" color="primary" align="center" gutterBottom>
-              <b>SkillXchange</b>
-            </Typography>
-            <Typography variant="h6" align="center" gutterBottom>
-              LOGIN
-            </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Typography variant="body2" fontWeight="bold">UserName</Typography>
-              <TextField label="UserName/Email" variant="outlined" size="small" fullWidth />
 
-              <Typography variant="body2" fontWeight="bold">Password</Typography>
-              <TextField label="Password" variant="outlined" size="small" fullWidth />
 
-              <Button variant="contained" color="primary" fullWidth>Login</Button>
-              <hr />
-              <Typography variant="body2" align="center" color="text.secondary">
-                Don't have an account? <Link to="/signup">Sign Up</Link>
-              </Typography>
-            </Box>
-          </Card>
-        </Box>
+
+          
       </Container>
     </div>
   );
