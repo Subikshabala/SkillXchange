@@ -1,8 +1,19 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 function LoginForm() {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
+    if (isLoginMode) {
+      // ✅ Login mode – redirect after login
+      navigate("/addskill");
+    } else {
+      // ✅ Signup mode – you can also redirect or do something else
+      alert("Signup successful!");
+    }
+  };
   return (
     
     <div className="w-[430px] bg-white p-8 rounded-3xl shadow-lg">
