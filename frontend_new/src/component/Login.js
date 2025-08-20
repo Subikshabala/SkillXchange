@@ -15,33 +15,81 @@ import { Box, Card, Container, TextField, Typography, Button } from '@mui/materi
 
 function Login() {
 
- const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [signupUsername, setSignupUsername] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const handleSignup = () => {
-    if (!username || !email || !password) {
-      alert("Please fill in all the fields before signing up.");
-      return;
+
+
+  const handleSignup = async () => {
+  if (!signupUsername || !signupEmail || !signupPassword || !signupConfirmPassword) {
+    alert("Please fill in all fields");
+    return;
+  }
+  if (signupPassword !== signupConfirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/users/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: signupUsername,
+        email: signupEmail,
+        password: signupPassword
+      })
+    });
+    const data = await response.json();
+    if (response.ok) {
+      alert("Signup successful!");
+      setShowSecond(false); // close modal
+    } else {
+      alert(data.message || "Signup failed");
     }
-    // ✅ Proceed with signup logic here
-    console.log("Signup successful");
-  
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong!");
+  }
+};
 
-   
+const [loginEmail, setLoginEmail] = useState("");
+const [loginPassword, setLoginPassword] = useState("");
 
+const handleLogin = async () => {
+  if (!loginEmail || !loginPassword) {
+    alert("Please fill in all fields");
+    return;
+  }
 
+  try {
+    const response = await fetch("http://localhost:5000/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userNameOrEmail: loginEmail,
+        password: loginPassword
+      })
+    });
 
+    const data = await response.json();
 
-    
-    if (password !== confirmPassword) {
-      alert("Passwords do not match. Please try again.");
-      return;
+    if (response.ok) {
+      alert("Login successful!");
+      setShowFirst(false); // closes the login modal
+
+      // Optionally save token in localStorage for authentication
+      localStorage.setItem("token", data.token);
+    } else {
+      alert(data.message || "Login failed");
     }
-    // ✅ Proceed with signup logic
-    console.log("Signup successful");}
-  ;
+  } catch (error) {
+    console.error(error);
+    alert("Something went wrong!");
+  }
+};
 
 
 const [showFirst, setShowFirst] = useState(false);
@@ -136,9 +184,9 @@ const [showFirst, setShowFirst] = useState(false);
                 variant="outlined" 
                 size="small" 
                 required 
-                value={username} 
+                value={loginEmail} 
                 placeholder="Enter Your Name or E-mail"
-                onChange={(e) => setUsername(e.target.value)} 
+                onChange={(e) => setLoginEmail(e.target.value)} 
               />
 
             
@@ -151,8 +199,8 @@ const [showFirst, setShowFirst] = useState(false);
                 size="small" 
                 required 
                 placeholder="Enter Password"
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
+                value={loginPassword} 
+                onChange={(e) => setLoginPassword(e.target.value)} 
               />
 
               <Button 
@@ -160,9 +208,9 @@ const [showFirst, setShowFirst] = useState(false);
                 text-color="primary" 
                 className="Submit" 
                 fullWidth 
-                onClick={handleSignup}
+                onClick={handleLogin}
               >
-                Signup
+                Login
               </Button>
 
               <hr />
@@ -203,9 +251,9 @@ const [showFirst, setShowFirst] = useState(false);
                 variant="outlined" 
                 size="small" 
                 required 
-                value={username}
+                value={signupUsername}
                 placeholder="Enter your Name"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setSignupUsername(e.target.value)}
               />
 
               <Typography variant="body2" fontWeight="bold">Email</Typography>
@@ -214,9 +262,9 @@ const [showFirst, setShowFirst] = useState(false);
                 variant="outlined" 
                 size="small" 
                 required 
-                value={email}
+                value={signupEmail}
                 placeholder="Enter Your E-mail"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setSignupEmail(e.target.value)}
               />
 
               <Typography variant="body2" fontWeight="bold">Password</Typography>
@@ -227,8 +275,8 @@ const [showFirst, setShowFirst] = useState(false);
                 size="small" 
                 required
                 placeholder="Enter Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={signupPassword}
+                onChange={(e) => setSignupPassword(e.target.value)}
               />
 
               <Typography variant="body2" fontWeight="bold">Confirm Password</Typography>
@@ -239,8 +287,8 @@ const [showFirst, setShowFirst] = useState(false);
                 size="small"
                 required
                 placeholder="Enter Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={signupConfirmPassword}
+                onChange={(e) => setSignupConfirmPassword(e.target.value)}
               />
 
               <Button 

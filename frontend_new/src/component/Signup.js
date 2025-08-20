@@ -4,24 +4,56 @@ import login from '../Asstes/login.png';
 import Avatar from '@mui/material/Avatar';
 import ButtonBase from '@mui/material/ButtonBase';
 import { Box, Card, Container, TextField, Typography, Grid, Button } from '@mui/material';
-import CardContent from '@mui/material/CardContent';
+//import CardContent from '@mui/material/CardContent';
 import { useState } from 'react';
 
 import Modal from 'react-bootstrap/Modal';
 
 function Signup() {
-   const [show, setShow] = useState(false);
-  
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-  const [avatarSrc, setAvatarSrc] = React.useState(undefined);
+  const [show, setShow] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [avatarSrc, setAvatarSrc] = useState(undefined);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
 
   const handleAvatarChange = (event) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setAvatarSrc(reader.result);
-      reader.readAsDataURL(file);
+  const file = event.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => setAvatarSrc(reader.result);
+    reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSignup = async () => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    if (!username || !email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:5000/api/users/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert("Signup successful!");
+        setShow(false); // closes the modal
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong!");
     }
   };
 
@@ -80,11 +112,11 @@ function Signup() {
          
                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                        <Typography variant="body2" fontWeight="bold">UserName</Typography>
-                       <TextField label="UserName" variant="outlined" size="small" required />
+                       <TextField label="UserName" variant="outlined" size="small" required value={username} onChange={(e) => setUsername(e.target.value)} />
                        <Typography variant="body2" fontWeight="bold">Email</Typography>
-                       <TextField label="Email" variant="outlined" size="small" required />
+                       <TextField label="Email" variant="outlined" size="small" required value={email} onChange={(e) => setEmail(e.target.value)}/>
                        <Typography variant="body2" fontWeight="bold">Password</Typography>
-                       <TextField label="Password" type="password" variant="outlined" size="small" required />
+                       <TextField label="Password" type="password" variant="outlined" size="small" required value={password} onChange={(e) => setPassword(e.target.value)} />
                        <Typography variant="body2" fontWeight="bold">Confirm Password</Typography>
                        
                        <TextField
@@ -92,8 +124,9 @@ function Signup() {
                     type="password"
                     variant="outlined"
                     size="small"
+                    required value={confirmPassword}
                   />
-                  <Button variant="contained" color="primary" fullWidth>
+                  <Button variant="contained" color="primary" fullWidth onClick={handleSignup}>
                     Sign Up
                   </Button>
                    <hr />
