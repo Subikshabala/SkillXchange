@@ -5,6 +5,8 @@ import ButtonBase from "@mui/material/ButtonBase";
 import Modal from "react-bootstrap/Modal";
 import { Box, Card, Container, TextField, Typography, Button } from "@mui/material";
 import { Carousel } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';  
+
 
 function Home() {
   // States for Login
@@ -18,8 +20,8 @@ function Home() {
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
   // Modal controls
-  const [showFirst, setShowFirst] = useState(false);
-  const [showSecond, setShowSecond] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   // Avatar upload state
   const [avatarSrc, setAvatarSrc] = useState(undefined);
@@ -53,7 +55,7 @@ function Home() {
       const data = await response.json();
       if (response.ok) {
         alert("Login successful!");
-        setShowFirst(false);
+        setShowLogin(false);
         localStorage.setItem("token", data.token);
       } else {
         alert(data.message || "Login failed");
@@ -88,7 +90,7 @@ function Home() {
       const data = await response.json();
       if (response.ok) {
         alert("Signup successful!");
-        setShowSecond(false);
+        setShowSignup(false);
       } else {
         alert(data.message || "Signup failed");
       }
@@ -100,8 +102,8 @@ function Home() {
 
   // Switch modal
   const handleOpenSecond = () => {
-    setShowFirst(false);
-    setTimeout(() => setShowSecond(true), 300);
+    setShowLogin(false);
+    setTimeout(() => setShowSignup(true), 300);
   };
 
   return (
@@ -128,7 +130,7 @@ function Home() {
             {/* Login Button */}
             <Button
               variant="primary"
-              onClick={() => setShowFirst(true)}
+              onClick={() => setShowLogin(true)}
               style={{
                 border: "2px solid white",
                 color: "white",
@@ -164,7 +166,7 @@ function Home() {
       </nav>
 
       {/* Login Modal */}
-      <Modal show={showFirst} onHide={() => setShowFirst(false)} centered>
+      <Modal show={showLogin} onHide={() => setShowLogin(false)} centered>
         <Modal.Body>
           <Box sx={{ flex: 1, maxWidth: 500, width: "100%" }}>
             <Card variant="outlined" sx={{ borderRadius: "10px", p: 3 }}>
@@ -215,7 +217,7 @@ function Home() {
       </Modal>
 
       {/* Signup Modal */}
-      <Modal show={showSecond} onHide={() => setShowSecond(false)} centered>
+      <Modal show={showSignup} onHide={() => setShowSignup(false)} centered>
         <Modal.Body>
           <Box sx={{ flex: 1, maxWidth: 500, width: "100%" }}>
             <Card variant="outlined" sx={{ borderRadius: "10px", p: 3 }}>
