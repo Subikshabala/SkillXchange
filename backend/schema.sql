@@ -1,18 +1,26 @@
--- users table
+-- Users (login/signup only)
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100),
+  username VARCHAR(100),
   email VARCHAR(100) UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
 
--- skills table
+-- User Profile (extra details)
+CREATE TABLE IF NOT EXISTS user_profiles (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER UNIQUE REFERENCES users(id),
+  location VARCHAR(150),
+  description TEXT
+);
+
+-- Skills (master list of all skills)
 CREATE TABLE IF NOT EXISTS skills (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100) UNIQUE NOT NULL
 );
 
--- user_skills table
+-- User skills mapping (have/want)
 CREATE TABLE IF NOT EXISTS user_skills (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id),
@@ -20,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user_skills (
   type VARCHAR(10) CHECK (type IN ('have', 'want'))
 );
 
--- matches table
+-- Matches (who can match with whom)
 CREATE TABLE IF NOT EXISTS matches (
   id SERIAL PRIMARY KEY,
   user1_id INTEGER REFERENCES users(id),
@@ -28,7 +36,7 @@ CREATE TABLE IF NOT EXISTS matches (
   skill_id INTEGER REFERENCES skills(id)
 );
 
--- videos table
+-- Videos
 CREATE TABLE IF NOT EXISTS videos (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES users(id),
@@ -37,18 +45,10 @@ CREATE TABLE IF NOT EXISTS videos (
   description TEXT
 );
 
--- points table
+-- Points
 CREATE TABLE IF NOT EXISTS points (
   id SERIAL PRIMARY KEY,  
   user_id INTEGER REFERENCES users(id),
   points INTEGER DEFAULT 0,
   reason TEXT
-);
-
-CREATE TABLE IF NOT EXISTS user_skills_detail (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL REFERENCES users(id),
-  skill_name VARCHAR(100) NOT NULL,
-  type VARCHAR(10) CHECK (type IN ('have', 'want')),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

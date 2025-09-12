@@ -14,6 +14,12 @@ app.use('/api/users', userRoutes);
 const skillRoutes = require('./routes/skillRoutes');
 app.use('/api/skills', skillRoutes);
 
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/api/profiles', profileRoutes);
+
+const pointRoutes = require('./routes/pointRoutes');
+app.use('/api/points', pointRoutes);
+
 // Server start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
