@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // ✅ import useNavigate
+import { Link, useNavigate } from "react-router-dom"; //  import useNavigate
 import { Button, ButtonBase, Avatar } from "@mui/material";
 
 const Profile = () => {
   const [avatarSrc, setAvatarSrc] = useState(null);
-  const navigate = useNavigate(); // ✅ create navigate function
+  const navigate = useNavigate(); //  create navigate function
 
   // Handle avatar change
   const handleAvatarChange = (e) => {

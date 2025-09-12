@@ -15,9 +15,10 @@ const SkillCard = ({ skill }) => {
       className="shadow-sm border-3 text-center"
       style={{
         width: "22rem",
-        backgroundColor: "#a8d0f7ff",
+        backgroundColor: "#bdd3e9ff",
         color: "white",
         position: "relative",
+        borderRadius:"10px"
       }}
     >
       <Card.Body>
@@ -31,7 +32,7 @@ const SkillCard = ({ skill }) => {
               height: "100px",
               objectFit: "cover",
               borderRadius: "50%",
-              border: "2px solid #28a745",
+              border: "2px solid #eef0eeff",
             }}
           />
           {/* Online/Offline Badge */}

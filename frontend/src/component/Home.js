@@ -5,7 +5,8 @@ import ButtonBase from "@mui/material/ButtonBase";
 import Modal from "react-bootstrap/Modal";
 import { Box, Card, Container, TextField, Typography, Button } from "@mui/material";
 import { Carousel } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';  
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import login from "../Asstes/login.png" 
 
 
 function Home() {
@@ -117,7 +118,7 @@ function Home() {
           <div className="collapse navbar-collapse" id="navbarNavDropdown">
             <ul className="navbar-nav me-auto">
               <li className="nav-item">
-                <Link className="nav-link active" to="/Home">Home</Link>
+                <Link className="nav-link active" to="/">Home</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/about">About</Link>
@@ -277,18 +278,54 @@ function Home() {
       </Modal> <br />
 
       {/* Main content */}
-      <Container
-        
-      >
-        <Box sx={{ flex: 1, textAlign: { xs: "center", md: "left" } }}>
-          <Typography variant="h4" fontWeight="bold" textAlign={{ xs: "center" }}>Welcome to SkillXchange!</Typography>
-          <Typography variant="subtitle1" color="text.secondary" textAlign={{ xs: "center" }}>
-            Share skills. Learn together. Grow with SkillXchange.
-          </Typography>
-        </Box>
-      </Container>
+     <Container
+      maxWidth="lg"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: { xs: "column", md: "row" }, // column on mobile, row on desktop
+        minHeight: "80vh", // take up screen height nicely
+        gap: 4,
+      }}
+    >
+      {/* Left Side: Image */}
+      <Box sx={{ flex: 1, textAlign: "center", marginTop: { xs: 2, md: -18 } }}>
+        <img
+          src={login}
+          alt="Login Illustration"
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            borderRadius: "10px",
+          }}
+        />
+      </Box>
 
-      <Container sx={{ mt: 5, mb: 5 }}>
+      {/* Right Side: Text */}
+      <Box sx={{ flex: 1, textAlign: { xs: "center", md: "left" }, marginBottom: 25}}>
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          textAlign={{ xs: "center", md: "left-center" }}
+          gutterBottom
+        >
+          Welcome to SkillXchange!
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          textAlign={{ xs: "center", md: "right" }}
+          marginBottom={2}
+          
+        >
+          Share skills. Learn together. Grow with SkillXchange.
+        </Typography>
+      </Box>
+    </Container>
+
+
+      <Container sx={{ marginTop:-15 }}>
         {/* About Us */}
         <Typography variant="h4" color="primary" gutterBottom><b>About Us</b></Typography>
         <Typography paragraph>

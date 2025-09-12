@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from "react-router-dom";
 
 export default function App() {
   const [messages, setMessages] = useState([{ sender: "Me", text: "Hi" }]);
@@ -86,8 +87,10 @@ export default function App() {
                 <button
                   className="btn btn-success w-100 fw-semibold rounded-3 shadow-sm"
                   onClick={handleComplete}
+                 
                 >
-                  ✅ Complete Session
+                   <Link className="nav-link active" to="/">✅ Complete Session</Link>
+                  
                 </button>
               ) : (
                 <div className="alert alert-success text-center fw-bold mt-2 rounded-3">
