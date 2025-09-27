@@ -1,25 +1,24 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require('cors'); // CORS import
-const app = express();
+const cors = require('cors');
 
 dotenv.config();
-app.use(cors()); //  CORS middleware used
+const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
+const profileRoutes = require("./routes/profileRoutes");
+
 app.use('/api/users', userRoutes);
+app.use("/api/profiles", profileRoutes);
 
-const skillRoutes = require('./routes/skillRoutes');
-app.use('/api/skills', skillRoutes);
+// Test route
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
 
-const profileRoutes = require('./routes/profileRoutes');
-app.use('/api/profiles', profileRoutes);
-
-const pointRoutes = require('./routes/pointRoutes');
-app.use('/api/points', pointRoutes);
-
-// Server start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
