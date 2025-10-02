@@ -57,7 +57,8 @@ function Home() {
       if (response.ok) {
         alert("Login successful!");
         setShowLogin(false);
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
       } else {
         alert(data.message || "Login failed");
       }

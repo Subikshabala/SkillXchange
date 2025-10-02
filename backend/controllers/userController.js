@@ -2,10 +2,25 @@ const pool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-//Register User
-exports.registerUser = async (req, res) => {
-  console.log("💡 Received from frontend:", req.body); 
+// Helper function to generate tokens
+const generateTokens = (userId) => {
+  const accessToken = jwt.sign(
+    { id: userId },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }   // short-lived token
+  );
 
+  const refreshToken = jwt.sign(
+    { id: userId },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: '7d' }    // longer-lived token
+  );
+
+  return { accessToken, refreshToken };
+};
+
+// Register User
+exports.registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
@@ -24,10 +39,14 @@ exports.registerUser = async (req, res) => {
       [username, email, hashedPassword]
     );
 
-    // Create JWT token
-    const token = jwt.sign({ id: newUser.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokens(newUser.rows[0].id);
 
-    res.status(201).json({ message: 'User registered successfully', token });
+    res.status(201).json({
+      message: 'User registered successfully',
+      accessToken,
+      refreshToken,
+    });
 
   } catch (err) {
     console.error(err.message);
@@ -35,13 +54,17 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-//Login User
+// Login User
 exports.loginUser = async (req, res) => {
   const { userNameOrEmail, password } = req.body;
 
   try {
     // Find user by email or username
-    const user = await pool.query('SELECT * FROM users WHERE email = $1 OR username = $1', [userNameOrEmail]);
+    const user = await pool.query(
+      'SELECT * FROM users WHERE email = $1 OR username = $1',
+      [userNameOrEmail]
+    );
+
     if (user.rows.length === 0) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -52,10 +75,14 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Create JWT token
-    const token = jwt.sign({ id: user.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Generate tokens
+    const { accessToken, refreshToken } = generateTokens(user.rows[0].id);
 
-    res.json({ message: 'Login successful', token });
+    res.json({
+      message: 'Login successful',
+      accessToken,
+      refreshToken,
+    });
 
   } catch (err) {
     console.error(err.message);
