@@ -1,45 +1,68 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, ButtonBase, Avatar,Snackbar,Alert } from "@mui/material";
+import { Button, ButtonBase, Avatar, Snackbar, Alert } from "@mui/material";
 
 const Profile = () => {
-  const [avatarSrc, setAvatarSrc] = useState(null);
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    full_name: "",
-    email: "",
-    skills: "",
-    want_to_learn: "",
-    state: "Tamil Nadu",
-    city: "Chennai",
-    about: "",
-  });
-  const [snackbar, setSnackbar] = useState({
-  open: false,
-  message: '',
-  severity: 'success', // 'success' or 'error'
-});
+  // Load saved data from localStorage (if exists)
+  const savedData = JSON.parse(localStorage.getItem("profileData")) || {};
+  const savedAvatar = localStorage.getItem("avatarSrc") || null;
 
+  const [avatarSrc, setAvatarSrc] = useState(savedAvatar);
+
+  const [formData, setFormData] = useState({
+    full_name: savedData.full_name || "",
+    email: savedData.email || "",
+    skills: savedData.skills || "",
+    want_to_learn: savedData.want_to_learn || "",
+    state: savedData.state || "Tamil Nadu",
+    city: savedData.city || "Chennai",
+    about: savedData.about || "",
+  });
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("profileData", JSON.stringify(formData));
+  }, [formData]);
+
+  // Save avatar image to localStorage whenever it changes
+  useEffect(() => {
+    if (avatarSrc) localStorage.setItem("avatarSrc", avatarSrc);
+  }, [avatarSrc]);
 
   // Handle avatar change
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarSrc(URL.createObjectURL(file));
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarSrc(imageUrl);
     }
   };
 
-  // Handle form submit
+  // Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/api/profiles", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -47,29 +70,27 @@ const Profile = () => {
       const data = await response.json();
 
       if (response.ok) {
-      setSnackbar({
-        open: true,
-        message: "Profile saved successfully!",
-        severity: "success"
-      });
-      setTimeout(() => navigate("Suggestion"), 1000); // go to cards page after 1 sec
-    } else {
-      setSnackbar({
-        open: true,
-        message: "Error saving profile: " + data.error,
-        severity: "error"
-      });
-    }
+        setSnackbar({
+          open: true,
+          message: "Profile saved successfully!",
+          severity: "success",
+        });
+        setTimeout(() => navigate("Suggestion"), 1000);
+      } else {
+        setSnackbar({
+          open: true,
+          message: "Error saving profile: " + data.error,
+          severity: "error",
+        });
+      }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong while saving profile.");
+      setSnackbar({
+        open: true,
+        message: "Something went wrong while saving profile.",
+        severity: "error",
+      });
     }
-  };
-
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
   };
 
   return (
@@ -99,7 +120,6 @@ const Profile = () => {
               </li>
             </ul>
 
-            {/* Profile Button */}
             <Button
               className="nav-link"
               component={Link}
@@ -134,63 +154,63 @@ const Profile = () => {
         <div className="row justify-content-center">
           <div className="col-lg-9">
             <div className="card bg-light text-dark shadow-lg border-light rounded-4 p-4">
-              <h2 className="text-center mb-2 fw-bold text-primary">PROFILE</h2> 
+              <h2 className="text-center mb-2 fw-bold text-primary">PROFILE</h2>
               <hr />
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
+                  <label className="form-label" style={{ fontWeight: "600" }}>
                     Full Name
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="John Doe"
-                    required
                     name="full_name"
+                    placeholder="John Doe"
                     value={formData.full_name}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
+                  <label className="form-label" style={{ fontWeight: "600" }}>
                     Email Address
                   </label>
                   <input
                     type="email"
                     className="form-control"
-                    placeholder="you@example.com"
-                    required
                     name="email"
+                    placeholder="you@example.com"
                     value={formData.email}
                     onChange={handleChange}
+                    required
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
+                  <label className="form-label" style={{ fontWeight: "600" }}>
                     Your Skills
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g., Python, Design, Public Speaking"
                     name="skills"
+                    placeholder="e.g., Python, Design"
                     value={formData.skills}
                     onChange={handleChange}
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
+                  <label className="form-label" style={{ fontWeight: "600" }}>
                     Want to Learn
                   </label>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="e.g., Web Dev, Marketing"
                     name="want_to_learn"
+                    placeholder="e.g., Web Dev, Marketing"
                     value={formData.want_to_learn}
                     onChange={handleChange}
                   />
@@ -198,20 +218,14 @@ const Profile = () => {
 
                 <div className="row">
                   <div className="col-md-4 mb-3">
-                    <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
-                      Country
-                    </label>
+                    <label className="form-label fw-semibold">Country</label>
                     <select className="form-select" disabled>
-                      <option value="India" defaultValue>
-                        India
-                      </option>
+                      <option value="India">India</option>
                     </select>
                   </div>
 
                   <div className="col-md-4 mb-3">
-                    <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
-                      State
-                    </label>
+                    <label className="form-label fw-semibold">State</label>
                     <select
                       className="form-select"
                       name="state"
@@ -229,9 +243,7 @@ const Profile = () => {
                   </div>
 
                   <div className="col-md-4 mb-3">
-                    <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
-                      City
-                    </label>
+                    <label className="form-label fw-semibold">City</label>
                     <select
                       className="form-select"
                       name="city"
@@ -251,14 +263,12 @@ const Profile = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label" style={{ color: "black", fontWeight: "600" }}>
-                    About You
-                  </label>
+                  <label className="form-label fw-semibold">About You</label>
                   <textarea
                     className="form-control"
                     rows="3"
-                    placeholder="Tell others about yourself..."
                     name="about"
+                    placeholder="Tell others about yourself..."
                     value={formData.about}
                     onChange={handleChange}
                   ></textarea>
@@ -273,24 +283,22 @@ const Profile = () => {
         </div>
       </div>
 
-    <Snackbar
-      open={snackbar.open}
-      autoHideDuration={3000}
-      onClose={() => setSnackbar({ ...snackbar, open: false })}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-    >
-      <Alert
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        severity={snackbar.severity}
-        sx={{ width: "100%" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        {snackbar.message}
-      </Alert>
-    </Snackbar>
-    
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
-
-);
+  );
 };
 
 export default Profile;
